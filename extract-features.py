@@ -27,6 +27,8 @@ def extract_features(tree, entities, e1, e2) :
                      'mechanism': False,
                      'effect': False,
                      'int': False}
+
+      # Features from before entities
       for tk in range(0, tkE1):
          try:
             while (tree.is_stopword(tk)):
@@ -51,6 +53,7 @@ def extract_features(tree, entities, e1, e2) :
                      'effect': False,
                      'int': False}
       
+      # Features between entities
       # Finding entities between the drug entities
       eib  = False
       # Finding conjunctions ('and', 'or' for now) between the drug entities
@@ -90,7 +93,7 @@ def extract_features(tree, entities, e1, e2) :
          feats.add('clue_'+ c + '_ib=' + str(clues[c]))
 
       
-      
+      # Features after entities
       # Finding clue words after second drug entity
       clues = {'advise': False,
                      'mechanism': False,
@@ -129,16 +132,23 @@ def extract_features(tree, entities, e1, e2) :
       # features about paths in the tree
       lcs = tree.get_LCS(tkE1,tkE2)
       
-      path1 = tree.get_up_path(tkE1,lcs)
-      path1 = "<".join([tree.get_lemma(x)+"_"+tree.get_rel(x) for x in path1])
-      feats.add("path1="+path1)
+      path_up = tree.get_up_path(tkE1,lcs)
+      path_down = tree.get_down_path(lcs,tkE2)
 
-      path2 = tree.get_down_path(lcs,tkE2)
-      path2 = ">".join([tree.get_lemma(x)+"_"+tree.get_rel(x) for x in path2])
-      feats.add("path2="+path2)
+      path1 = "<".join([tree.get_lemma(x)+"_"+tree.get_rel(x) for x in path_up])
+      path2 = ">".join([tree.get_lemma(x)+"_"+tree.get_rel(x) for x in path_down])
 
       path = path1+"<"+tree.get_lemma(lcs)+"_"+tree.get_rel(lcs)+">"+path2      
+      
+      # Try other path info
+      path3 = "<".join([tree.get_tag(x) for x in path_up])
+      path4 = ">".join([tree.get_tag(x) for x in path_down])
+
+      feats.add("path1="+path1)
+      feats.add("path2="+path2)
       feats.add("path="+path)
+      feats.add("path3="+path3)
+      feats.add("path4="+path4)
 
       # print()
       
@@ -196,6 +206,7 @@ for f in listdir(datadir) :
             id_e1 = p.attributes["e1"].value
             id_e2 = p.attributes["e2"].value
             # feature extraction
+
 
             feats = extract_features(analysis,entities,id_e1,id_e2) 
             # resulting vector
