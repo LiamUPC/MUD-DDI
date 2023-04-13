@@ -138,17 +138,28 @@ def extract_features(tree, entities, e1, e2) :
       path1 = "<".join([tree.get_lemma(x)+"_"+tree.get_rel(x) for x in path_up])
       path2 = ">".join([tree.get_lemma(x)+"_"+tree.get_rel(x) for x in path_down])
 
+      path3 = "<".join([tree.get_lemma(x) for x in path_up])
+      path4 = ">".join([tree.get_lemma(x) for x in path_down])
+
+      path5 = "<".join([tree.get_rel(x) for x in path_up])
+      path6 = ">".join([tree.get_rel(x) for x in path_down])
+
+      path7 = "<".join([tree.get_tag(x) for x in path_up])
+      path8 = ">".join([tree.get_tag(x) for x in path_down])
+
       path = path1+"<"+tree.get_lemma(lcs)+"_"+tree.get_rel(lcs)+">"+path2      
       
       # Try other path info
-      path3 = "<".join([tree.get_tag(x) for x in path_up])
-      path4 = ">".join([tree.get_tag(x) for x in path_down])
 
       feats.add("path1="+path1)
       feats.add("path2="+path2)
-      feats.add("path="+path)
       feats.add("path3="+path3)
       feats.add("path4="+path4)
+      feats.add("path5="+path5)
+      feats.add("path6="+path6)
+      feats.add("path7="+path7)
+      feats.add("path8="+path8)
+      feats.add("path="+path)
 
       # print()
       
