@@ -11,7 +11,7 @@ exit
 # extract features
 echo "Extracting features"
 python3 -i extract-features.py $BASEDIR/data/devel/ > devel.cod &
-#python3 extract-features.py $BASEDIR/data/train/ | tee train.cod | cut -f4- > train.cod.cl
+python3 extract-features.py $BASEDIR/data/train/ | tee train.cod | cut -f4- > train.cod.cl
 
 kill `cat /tmp/corenlp-server.running`
 
