@@ -1,0 +1,6 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+devel*
+*.joblib
+train.cod*
+experiments.txt
