@@ -172,6 +172,27 @@ def extract_features(tree, entities, e1, e2) :
       feats.add("path_tag="+path_tag)
       feats.add("path="+path)
 
+      # Path to root
+      path_tk1_root = tree.get_ancestors(tkE1)
+      path_tk2_root = tree.get_ancestors(tkE2)
+      path9 = "<".join([tree.get_rel(x) for x in path_tk1_root])
+      path10 = "<".join([tree.get_rel(x) for x in path_tk2_root])
+      path11 = "<".join([tree.get_lemma(x).lower() if not tree.is_entity(x,entities) else "ENTITY" for x in path_tk1_root])
+      path12 = "<".join([tree.get_lemma(x).lower() if not tree.is_entity(x,entities) else "ENTITY" for x in path_tk2_root])
+      feats.add("path9="+path9)
+      feats.add("path10="+path10)
+      feats.add("path11="+path11)
+      feats.add("path12="+path12)
+
+      # Root features
+      tkRoot = path_tk1_root[-1]
+      root_tag = tree.get_tag(tkRoot)
+      root_lemma = tree.get_lemma(tkRoot).lower()
+      root_is_ent = tree.is_entity(tkRoot,entities)
+      feats.add("root_tag="+root_tag)
+      feats.add("root_lemma="+root_lemma)
+      feats.add("root_is_ent="+str(root_is_ent))
+
       # print()
       
    return feats
