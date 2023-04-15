@@ -27,6 +27,18 @@ def extract_features(tree, entities, e1, e2) :
                      'mechanism': False,
                      'effect': False,
                      'int': False}
+      
+      # Check if entities are the same
+      same_ent = tree.get_lemma(tkE1).lower() == tree.get_lemma(tkE2).lower() 
+      feats.add('same_ent='+ str(same_ent))
+      
+      # Add entity pair as feature
+      ent_pair = "_".join(sorted([tree.get_lemma(tkE1).lower(),tree.get_lemma(tkE2).lower()]))
+      ent1 = tree.get_lemma(tkE1).lower()
+      ent2 = tree.get_lemma(tkE2).lower()
+      feats.add("ent_pair="+ent_pair)
+      feats.add("ent1="+ent1)
+      feats.add("ent2="+ent2)
 
       # Features from before entities
       for tk in range(0, tkE1):
@@ -137,9 +149,9 @@ def extract_features(tree, entities, e1, e2) :
 
       path1 = "<".join([tree.get_lemma(x)+"_"+tree.get_rel(x) for x in path_up])
       path2 = ">".join([tree.get_lemma(x)+"_"+tree.get_rel(x) for x in path_down])
-
-      path3 = "<".join([tree.get_lemma(x) for x in path_up])
-      path4 = ">".join([tree.get_lemma(x) for x in path_down])
+      
+      path3 = "<".join([tree.get_lemma(x).lower() if not tree.is_entity(x,entities) else "ENTITY" for x in path_up])
+      path4 = ">".join([tree.get_lemma(x).lower() if not tree.is_entity(x,entities) else "ENTITY" for x in path_down])
 
       path5 = "<".join([tree.get_rel(x) for x in path_up])
       path6 = ">".join([tree.get_rel(x) for x in path_down])
@@ -148,17 +160,16 @@ def extract_features(tree, entities, e1, e2) :
       path8 = ">".join([tree.get_tag(x) for x in path_down])
 
       path = path1+"<"+tree.get_lemma(lcs)+"_"+tree.get_rel(lcs)+">"+path2      
+      path_tag = path7+"<"+tree.get_tag(lcs)+">"+path8
       
       # Try other path info
-
       feats.add("path1="+path1)
       feats.add("path2="+path2)
       feats.add("path3="+path3)
       feats.add("path4="+path4)
       feats.add("path5="+path5)
       feats.add("path6="+path6)
-      feats.add("path7="+path7)
-      feats.add("path8="+path8)
+      feats.add("path_tag="+path_tag)
       feats.add("path="+path)
 
       # print()
